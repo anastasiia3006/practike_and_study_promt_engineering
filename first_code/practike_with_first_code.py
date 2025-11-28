@@ -1,26 +1,30 @@
 #test openai library and code
+# цей код підключається до Gemini і працює з цим штучним інтелектом
 
 import os
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
-# 1. Створюємо клієнта. Ключ автоматично береться зі змінної середовища
-client = OpenAI()
+# 1. Налаштовуємо клієнта. Ключ автоматично береться зі змінної середовища
+client = genai.Client()
 
-print("Надсилаємо запит до моделі...")
+print("Надсилаємо запит до моделі Gemini...")
 
 # 2. Робимо API-запит
-# "system" - дає інструкцію моделі (персона)
-# "user" - це наш промпт
-completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "Ти — експерт з AI-автоматизації."},
-        {"role": "user", "content": "Поясни, що таке RAG простими словами."}
+prompt = "Поясни, що таке RAG простими словами."
+
+completion = client.models.generate_content(
+    model='gemini-2.5-flash',
+    contents=[
+        # Увага: тут ми просто передаємо текст промпту,
+        # а не обгортаємо його у складні структури types.Content та types.Part.
+        # Це найпростіший спосіб для chat-моделей.
+        prompt
     ]
 )
 
 # 3. Виводимо відповідь
-response = completion.choices[0].message.content
-print("--- Відповідь ШІ ---")
+response = completion.text
+print("--- Відповідь ШІ Gemini ---")
 print(response)
-print("--------------------")
+print("----------------------------")
